@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
-        Debug.Log(Time.fixedDeltaTime);
         if (!_instance)
         {
             _instance = this;
