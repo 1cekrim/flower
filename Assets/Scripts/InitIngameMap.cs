@@ -10,7 +10,7 @@ public class InitIngameMap : MonoBehaviour
     public int cellSize;
     private GameObject[,] tiles;
 
-    private void CreateTile()
+    public void CreateTile()
     {
         // TODO: 맵을 처음 생성할 때는 특수효과 넣기
         Debug.Log("InitIngameMap::CreateTile");
