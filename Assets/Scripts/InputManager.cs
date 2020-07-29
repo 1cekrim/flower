@@ -134,7 +134,7 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        keyBind.Update();
+        keyBind?.Update();
     }
 }
 
