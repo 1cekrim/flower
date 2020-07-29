@@ -152,7 +152,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 284903532}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 2}
+  m_LocalPosition: {x: 0, y: 3, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 246018835}
@@ -389,7 +389,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: -0.1
+            m_FloatArgument: -1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -404,7 +404,7 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 0.1
+            m_FloatArgument: 1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -849,10 +849,10 @@ MonoBehaviour:
   tileObjects:
   - {fileID: 1619558185565566, guid: 1d9cc67243350f643b8c562ed0503c49, type: 3}
   - {fileID: 1560257132984952, guid: 5cbae0602ce9acf41a98fda3a353569a, type: 3}
-  seaObject: {fileID: 1697305157750618, guid: 01551af6657ebea4ba670ee7b8c26600, type: 3}
+  waterObject: {fileID: 0}
   mapParent: {fileID: 512244034}
-  gridRows: 40
-  gridCols: 40
+  gridRows: 100
+  gridCols: 100
   cellSize: 2
 --- !u!114 &2005418868
 MonoBehaviour:

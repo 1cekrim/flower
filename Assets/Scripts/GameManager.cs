@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public UnityEvent awakeEvents;
     public UnityEvent startEvents;
     public UnityEvent tickEvents;
+    public FloorTile[,] mapTile;
     private static GameManager _instance;
     private int fixedUpdateCounter = 0;
     public static GameManager Instance
