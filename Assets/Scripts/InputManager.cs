@@ -10,7 +10,9 @@ public enum InputTypeEnum
 {
     invalid,
     gimbal_left,
-    gimbal_right
+    gimbal_right,
+    camera_zoomin,
+    camera_zoomout
 }
 
 public interface KeyBindInterface
@@ -43,6 +45,20 @@ public class KeyboardMouseInput : KeyBindInterface
                 {
                     InputManager.Instance.RaiseEvent(dic.Value);
                 }
+            }
+        }
+
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+        if (scroll != 0)
+        {
+            if (scroll < 0)
+            {
+                InputManager.Instance.RaiseEvent(InputTypeEnum.camera_zoomout);
+            }
+            else
+            {
+                InputManager.Instance.RaiseEvent(InputTypeEnum.camera_zoomin);
             }
         }
     }
