@@ -6,15 +6,50 @@ using UnityEngine.Events;
 using UnityEditor;
 #endif
 
-public class InputManager : MonoBehaviour
+public enum InputTypeEnum
 {
-    public enum InputTypeEnum
+    invalid,
+    gimbal_left,
+    gimbal_right
+}
+
+public interface KeyBindInterface
+{
+    KeyBindInterface Init();
+    void Update();
+}
+
+public class KeyboardMouseInput : KeyBindInterface
+{
+    private Dictionary<KeyCode, InputTypeEnum> keyDict;
+    public KeyBindInterface Init()
     {
-        invalid,
-        gimbal_left,
-        gimbal_right
+        keyDict = new Dictionary<KeyCode, InputTypeEnum>
+        {
+            { KeyCode.Q, InputTypeEnum.gimbal_left },
+            { KeyCode.E, InputTypeEnum.gimbal_right }
+        };
+
+        return this;
     }
 
+    public void Update()
+    {
+        if (Input.anyKeyDown)
+        {
+            foreach (var dic in keyDict)
+            {
+                if (Input.GetKeyDown(dic.Key))
+                {
+                    InputManager.Instance.RaiseEvent(dic.Value);
+                }
+            }
+        }
+    }
+}
+
+public class InputManager : MonoBehaviour
+{
     [System.Serializable]
     public struct InputEvent
     {
@@ -24,11 +59,12 @@ public class InputManager : MonoBehaviour
 
     public InputEvent[] inputEvents;
     private Dictionary<InputTypeEnum, UnityEvent> inputEventDictionary;
-
+    private KeyBindInterface keyBind;
     private static InputManager _instance;
     public static InputManager Instance
     {
-        get {
+        get
+        {
             if (!_instance)
             {
                 _instance = FindObjectOfType(typeof(InputManager)) as InputManager;
@@ -49,6 +85,12 @@ public class InputManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         UpdateInputEventDictionary();
+        SelectKeyBind(new KeyboardMouseInput().Init());
+    }
+
+    public void SelectKeyBind(KeyBindInterface keyBind)
+    {
+        this.keyBind = keyBind;
     }
 
     public void UpdateInputEventDictionary()
@@ -62,7 +104,8 @@ public class InputManager : MonoBehaviour
             }
         }
         UnityEvent invalidEvent = new UnityEvent();
-        invalidEvent.AddListener(delegate {
+        invalidEvent.AddListener(delegate
+        {
             Debug.LogError("invalid input!!");
         });
         inputEventDictionary[InputTypeEnum.invalid] = invalidEvent;
@@ -75,7 +118,7 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-
+        keyBind.Update();
     }
 }
 
@@ -83,13 +126,13 @@ public class InputManager : MonoBehaviour
 [CustomEditor(typeof(InputManager))]
 public class InputManagerEditor : Editor 
 {
-    public InputManager.InputTypeEnum selected;
+    public InputTypeEnum selected;
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector ();
         EditorGUILayout.LabelField("Raise Event");
         InputManager inputManager = (InputManager)target;
-        selected = (InputManager.InputTypeEnum)EditorGUILayout.EnumPopup("selected event", selected);
+        selected = (InputTypeEnum)EditorGUILayout.EnumPopup("selected event", selected);
         if (GUILayout.Button("raise"))
         {
             inputManager.RaiseEvent(selected);
