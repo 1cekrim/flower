@@ -10,7 +10,6 @@ public class InitIngameMap : MonoBehaviour
     public int gridRows;
     public int gridCols;
     public int cellSize;
-    public int waterPadding;
     private GameObject[,] tiles;
 
     public void CreateTile()
@@ -20,19 +19,15 @@ public class InitIngameMap : MonoBehaviour
         tiles = new GameObject[gridRows, gridCols];
         Quaternion seaRotation = Quaternion.identity;
         seaRotation.eulerAngles = new Vector3(90, 0, 0);
-        for (int i = -waterPadding; i < gridRows + waterPadding; ++i)
+        Vector3 center = new Vector3((int)(gridCols / 2), 0, (int)(gridRows / 2)) * cellSize;
+        for (int i = 0; i < gridRows; ++i)
         {
-            for (int j = -waterPadding; j < gridCols + waterPadding; ++j)
+            for (int j = 0; j < gridCols; ++j)
             {
                 if (i >= 0 && i < gridRows && j >= 0 && j < gridCols)
                 {
-                    tiles[i, j] = Instantiate(tileObjects[(i + j) % 2], new Vector3(j, 0, i) * cellSize, Quaternion.identity) as GameObject;
+                    tiles[i, j] = Instantiate(tileObjects[(i + j) % 2], new Vector3(j, 0, i) * cellSize - center, Quaternion.identity) as GameObject;
                     tiles[i, j].transform.parent = mapParent.transform;
-                }
-                else
-                {
-                    var obj = Instantiate(seaObject, new Vector3(j, 0, i) * cellSize, seaRotation) as GameObject;
-                    obj.transform.parent = mapParent.transform;
                 }
             }
         }
