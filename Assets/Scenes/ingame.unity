@@ -849,10 +849,11 @@ MonoBehaviour:
   tileObjects:
   - {fileID: 1619558185565566, guid: 1d9cc67243350f643b8c562ed0503c49, type: 3}
   - {fileID: 1560257132984952, guid: 5cbae0602ce9acf41a98fda3a353569a, type: 3}
-  waterObject: {fileID: 0}
+  waterObject: {fileID: 1987422295981978, guid: 4d1a1b8720d1bc3438a87ab19ed6593a,
+    type: 3}
   mapParent: {fileID: 512244034}
-  gridRows: 100
-  gridCols: 100
+  gridRows: 150
+  gridCols: 150
   cellSize: 2
 --- !u!114 &2005418868
 MonoBehaviour:
