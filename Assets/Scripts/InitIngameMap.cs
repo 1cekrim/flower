@@ -11,22 +11,20 @@ public class InitIngameMap : MonoBehaviour
     public int gridCols;
     public int cellSize;
 
-    private int[] dx = {0, -1, 1, 0};
-    private int[] dy = {1, 0, 0, -1};
-
-    private void checkMap(bool[,] tMap, bool[,] map, int x, int y)
+    public class Pair<T, U>
     {
-        tMap[y, x] = false;
-        map[y, x] = true;
-        for (int i = 0; i < 4; ++i)
+        public Pair()
         {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if (nx >= 0 && nx < gridCols && ny >= 0 && ny < gridRows && tMap[ny, nx])
-            {
-                checkMap(tMap, map, nx, ny);
-            }
         }
+
+        public Pair(T first, U second)
+        {
+            this.First = first;
+            this.Second = second;
+        }
+
+        public T First { get; set; }
+        public U Second { get; set; }
     }
 
     public void CreateTile()
@@ -38,54 +36,76 @@ public class InitIngameMap : MonoBehaviour
         waterRotation.eulerAngles = new Vector3(90, 0, 0);
         Vector3 center = new Vector3((int)(gridCols / 2), 0, (int)(gridRows / 2)) * cellSize;
         float maxDist = Mathf.Sqrt(gridCols * gridCols + gridRows * gridRows);
-        bool[,] tMap = new bool[gridRows, gridCols];
         bool[,] map = new bool[gridRows, gridCols];
+
+        // Perlin noise 값에, 섬 중심으로부터의 거리에 비례하는 dist를 뺀 후 .05f를 더한다
+        // 이 값이 0.5f보다 크면 땅이라는 표시로 map[i, j]를 true로, 아니면 물이라는 표시로 map[i, j]를 false로 한다
         int seed = Random.Range(0, 1000);
         for (int i = 0; i < gridRows; ++i)
         {
             for (int j = 0; j < gridCols; ++j)
             {
-                float dist = Mathf.Sqrt((i - gridRows/2) * (i - gridRows/2) + (j - gridCols/2) * (j - gridCols/2));
-                dist /= maxDist / 2;
-                var perlin = Mathf.PerlinNoise((float)i / (float)gridRows * 12 + seed, (float)j / gridCols * 12 + seed) - dist + .05f;
-                
+                float dist = Mathf.Sqrt((i - gridRows / 2) * (i - gridRows / 2) + (j - gridCols / 2) * (j - gridCols / 2));
+                dist /= maxDist / 2.5f;
+                var perlin = Mathf.PerlinNoise((float)i / (float)gridRows * 8 + seed, (float)j / gridCols * 8 + seed) - dist + .05f;
+
                 if (perlin > .05f)
                 {
-                    tMap[i, j] = true;
+                    map[i, j] = true;
                 }
                 else
                 {
-                    tMap[i, j] = false;
+                    map[i, j] = false;
                 }
             }
         }
 
-        checkMap(tMap, map, (int)(gridCols / 2), (int)(gridRows / 2));
-
-        for (int i = 0; i < gridRows; ++i)
+        // 위 알고리즘에서 섬 중심은 dist가 0이므로, Perlin Noise와 상관없이 항상 땅이다
+        // 그러므로 섬 중심으로부터 BFS 탐색을 진행해, 섬 중심과 떨어져 있는 땅을 제외하고 Instantiate한다
+        // 땅과 닿아있는 물 부분에는 waterObject를 Instantiate해 상호작용이 가능하게 한다
+        Queue<Pair<int, int>> q = new Queue<Pair<int, int>>();
+        q.Enqueue(new Pair<int, int>((int)(gridCols / 2), (int)(gridRows / 2)));
+        map[(int)(gridRows / 2), (int)(gridCols / 2)] = false;
+        bool[,] check = new bool[gridRows, gridCols];
+        check.Initialize();
+        check[(int)(gridRows / 2), (int)(gridCols / 2)] = true;
+        int[] dx = { 0, -1, 1, 0 };
+        int[] dy = { 1, 0, 0, -1 };
+        while (q.Count > 0)
         {
-            for (int j = 0; j < gridCols; ++j)
+            var top = q.Dequeue();
+            int x = top.First;
+            int y = top.Second;
             {
-                if (map[i, j])
-                {
-                    var obj = Instantiate(tileObjects[(i + j) % 2], new Vector3(j, 0, i) * cellSize - center, Quaternion.identity) as GameObject;
-                    obj.transform.parent = mapParent.transform;
-
-                    FloorTile ft = obj.AddComponent<FloorTile>();
-                    ft.canMove = true;
-                    GameManager.Instance.mapTile[i, j] = ft;
-                }
-                else
-                {
-                    var obj = Instantiate(waterObject, new Vector3(j, 0, i) * cellSize - center, waterRotation) as GameObject;
-                    obj.transform.parent = mapParent.transform;
-
-                    FloorTile ft = obj.AddComponent<FloorTile>();
-                    ft.canMove = false;
-                    GameManager.Instance.mapTile[i, j] = ft;
-                }
-                
+                var obj = Instantiate(tileObjects[(y + x) % 2], new Vector3(x, 0, y) * cellSize - center, Quaternion.identity) as GameObject;
+                obj.transform.parent = mapParent.transform;
+                FloorTile ft = obj.AddComponent<FloorTile>();
+                ft.canMove = true;
+                GameManager.Instance.mapTile[y, x] = ft;
             }
+
+            for (int i = 0; i < 4; ++i)
+            {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                if (nx >= 0 && nx < gridCols && ny >= 0 && ny < gridRows && !check[ny, nx])
+                {
+                    check[ny, nx] = true;
+                    if (map[ny, nx])
+                    {
+                        q.Enqueue(new Pair<int, int>(nx, ny));
+                    }
+                    else
+                    {
+                        var obj = Instantiate(waterObject, new Vector3(nx, 0.5f, ny) * cellSize - center, waterRotation) as GameObject;
+                        obj.transform.parent = mapParent.transform;
+                        FloorTile ft = obj.AddComponent<FloorTile>();
+                        ft.canMove = false;
+                        GameManager.Instance.mapTile[ny, nx] = ft;
+                    }
+                }
+            }
+
         }
     }
 }
