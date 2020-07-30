@@ -5,4 +5,8 @@ using UnityEngine;
 public class FloorTile : MonoBehaviour
 {
     public bool canMove;
+    private void Awake()
+    {
+        gameObject.layer = 12;
+    }
 }
