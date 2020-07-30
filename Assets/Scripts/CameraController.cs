@@ -8,10 +8,19 @@ public class CameraController : MonoBehaviour
     public GameObject cameraObject;
 
     private Camera cameraComponent;
+    private Transform targetTransform;
+    private Transform gimbalTransform;
 
     private void Awake()
     {
         cameraComponent = cameraObject.GetComponent<Camera>();
+        targetTransform = GameManager.Instance.playerObject.transform;
+        gimbalTransform = gimbalObject.transform;
+    }
+
+    private void LateUpdate()
+    {
+        gimbalTransform.position = new Vector3(targetTransform.position.x, targetTransform.position.y + 15, targetTransform.position.z);
     }
 
     public void GimbalRotateY(float y)

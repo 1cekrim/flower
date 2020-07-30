@@ -105,7 +105,9 @@ public class InitIngameMap : MonoBehaviour
                     }
                 }
             }
-
         }
+
+        // 맵 생성이 완료된 뒤에 NavMesh를 업데이트함
+        NavigationManager.Instance.UpdateNavMeshSurfaces();
     }
 }
