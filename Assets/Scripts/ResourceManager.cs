@@ -23,6 +23,43 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
+    private int level;
+    public int Level
+    {
+        get
+        {
+            return level;
+        }
+    }
+
+    private int exp;
+    public int Exp
+    {
+        get
+        {
+            return exp;
+        }
+    }
+
+    public int MaxExp
+    {
+        get
+        {
+            // TODO: 최대 경험치 공식은 나중에 다시 정하기
+            return level * level * level;
+        }
+    }
+
+    public void ChangeExp(int amount)
+    {
+        exp += amount;
+        if (exp >= MaxExp)
+        {
+            exp -= MaxExp;
+            ++level;
+        }
+    }
+    
     private static ResourceManager _instance;
     public static ResourceManager Instance
     {
