@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ResourceManager : MonoBehaviour
 {
+    public UnityEvent changeGoldEvent;
+    public UnityEvent changeExpEvent;
+    public UnityEvent levelUpEvent;
     private int gold;
     public int Gold
     {
@@ -20,6 +24,7 @@ public class ResourceManager : MonoBehaviour
             return false;
         }
         gold = result;
+        changeGoldEvent.Invoke();
         return true;
     }
 
@@ -53,11 +58,15 @@ public class ResourceManager : MonoBehaviour
     public void ChangeExp(int amount)
     {
         exp += amount;
-        if (exp >= MaxExp)
+        if (exp < MaxExp)
         {
-            exp -= MaxExp;
-            ++level;
+            changeExpEvent.Invoke();
+            return;
         }
+        exp -= MaxExp;
+        changeExpEvent.Invoke();
+        ++level;
+        levelUpEvent.Invoke();
     }
     
     private static ResourceManager _instance;
