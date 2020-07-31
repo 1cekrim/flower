@@ -63,6 +63,6 @@ public class ItemComponent : MonoBehaviour
 
     public void AddButton(GameObject go)
     {
-        go.transform.parent = buttonGroup.transform;
+        go.transform.SetParent(buttonGroup.transform);
     }
 }
