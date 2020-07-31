@@ -917,6 +917,34 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  changeSprinklerEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 501344297}
+        m_MethodName: UpdateText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  changeMaxSprinklerEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 501344297}
+        m_MethodName: UpdateText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &470550496
 Transform:
   m_ObjectHideFlags: 0
@@ -1199,6 +1227,7 @@ GameObject:
   - component: {fileID: 501344294}
   - component: {fileID: 501344296}
   - component: {fileID: 501344295}
+  - component: {fileID: 501344297}
   m_Layer: 5
   m_Name: SprinklerText
   m_TagString: Untagged
@@ -1265,6 +1294,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 501344293}
   m_CullTransparentMesh: 0
+--- !u!114 &501344297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501344293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c5523d79596ef14790eb808015b0261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &508258094
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,7 +1374,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u25CF \uBB3C\uBFCC\uB9AC\uAC1C \uB0B4\uAD6C\uB3C4  : "
+  m_Text: "\u25CF \uBB3C\uBFCC\uB9AC\uAC1C \uB0B4\uAD6C\uB3C4 : "
 --- !u!222 &508258097
 CanvasRenderer:
   m_ObjectHideFlags: 0
