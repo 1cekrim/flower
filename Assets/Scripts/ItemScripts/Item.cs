@@ -15,7 +15,8 @@ public class Item : MonoBehaviour
     [SerializeField]
     private GameObject itemCountBox;
     [SerializeField]
-    
+    private GameObject buttonGroup;
+
     public Texture ItemTexture
     {
         get
@@ -52,5 +53,10 @@ public class Item : MonoBehaviour
             itemCount.text = value.ToString();
             itemCountBox.SetActive(value > 1);
         }
+    }
+
+    public void AddButton(GameObject go)
+    {
+        go.transform.parent = buttonGroup.transform;
     }
 }
