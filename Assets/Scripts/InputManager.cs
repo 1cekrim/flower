@@ -30,6 +30,7 @@ public class KeyboardMouseInput : KeyBindInterface
 {
     private Dictionary<KeyCode, InputTypeEnum> keyDict;
     private NavMeshAgent agent;
+    private GameObject windowPanel;
     public KeyBindInterface Init()
     {
         keyDict = new Dictionary<KeyCode, InputTypeEnum>
@@ -42,12 +43,18 @@ public class KeyboardMouseInput : KeyBindInterface
         };
 
         agent = GameManager.Instance.playerObject.GetComponent<NavMeshAgent>();
-
+        windowPanel = GameObject.Find("WindowPanel");
         return this;
     }
 
     public void Update()
     {
+        // Window가 떠있는 동안에는 모든 기능 비활성화
+        if (windowPanel.activeSelf)
+        {
+            return;
+        }
+
         if (Input.anyKeyDown)
         {
             foreach (var dic in keyDict)
@@ -60,7 +67,6 @@ public class KeyboardMouseInput : KeyBindInterface
         }
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-
         if (scroll != 0)
         {
             if (scroll < 0)
