@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public UnityEvent tickEvents;
     public GameObject playerObject;
     public FloorTile[,] mapTile;
+    public Language language = Language.ko_KR;
     private static GameManager _instance;
     private int fixedUpdateCounter = 0;
     public static GameManager Instance
