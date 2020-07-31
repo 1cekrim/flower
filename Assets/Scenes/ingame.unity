@@ -880,11 +880,33 @@ MonoBehaviour:
         m_CallState: 2
   changeExpEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 485881815}
+        m_MethodName: UpdateText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   levelUpEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 124134068}
+        m_MethodName: UpdateText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 485881815}
         m_MethodName: UpdateText
         m_Mode: 1
         m_Arguments:
@@ -920,6 +942,7 @@ GameObject:
   - component: {fileID: 485881812}
   - component: {fileID: 485881814}
   - component: {fileID: 485881813}
+  - component: {fileID: 485881815}
   m_Layer: 5
   m_Name: ExpText
   m_TagString: Untagged
@@ -944,7 +967,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 32.67}
+  m_SizeDelta: {x: 164.40334, y: 32.67}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &485881813
 MonoBehaviour:
@@ -986,6 +1009,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 485881811}
   m_CullTransparentMesh: 0
+--- !u!114 &485881815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485881811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0736197a47c75e349a64662498245fd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &499166835
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,7 +1056,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 32.67}
+  m_SizeDelta: {x: 75.236664, y: 32.67}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &499166837
 MonoBehaviour:
@@ -3045,7 +3080,7 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
+  m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
