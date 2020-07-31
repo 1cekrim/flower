@@ -89,8 +89,10 @@ struct FlowerData
 
 public class FlowerFactory : MonoBehaviour, IItemFactory
 {
+    public bool IsInitialized = false;
     [SerializeField]
     private FlowerData[] flowerData;
+    public List<Flower> flowers = new List<Flower>();
     public void AppendItems(ref Dictionary<string, Item> items)
     {
         foreach (FlowerData data in flowerData)
@@ -100,12 +102,14 @@ public class FlowerFactory : MonoBehaviour, IItemFactory
                 string id = data.kind.ToString() + "_" + color;
                 Flower flower = new Flower(data.kind, color, id);
                 items.Add(id, flower);
+                flowers.Add(flower);
             }
         }
+        IsInitialized = true;
     }
 }
 
-class Flower : Item
+public class Flower : Item
 {
     private FlowerKind kind;
     private FlowerColor color;
