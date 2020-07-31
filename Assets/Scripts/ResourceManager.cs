@@ -8,6 +8,8 @@ public class ResourceManager : MonoBehaviour
     public UnityEvent changeGoldEvent;
     public UnityEvent changeExpEvent;
     public UnityEvent levelUpEvent;
+    public UnityEvent changeSprinklerEvent;
+    public UnityEvent changeMaxSprinklerEvent;
     private int gold;
     public int Gold
     {
@@ -67,6 +69,40 @@ public class ResourceManager : MonoBehaviour
         changeExpEvent.Invoke();
         ++level;
         levelUpEvent.Invoke();
+    }
+
+    private int sprinkler;
+    public int Sprinkler
+    {
+        get
+        {
+            return sprinkler;
+        }
+    }
+    private int maxSprinkler;
+    public int MaxSprinkler
+    {
+        get
+        {
+            return maxSprinkler;
+        }
+        set
+        {
+            maxSprinkler = value;
+            changeMaxSprinklerEvent.Invoke();
+        }
+    }
+
+    public bool ChangeSprinkler(int amount)
+    {
+        int result = Sprinkler + amount;
+        if (result < 0)
+        {
+            return false;
+        }
+        sprinkler = result > MaxSprinkler ? MaxSprinkler : result;
+        changeSprinklerEvent.Invoke();
+        return true;
     }
     
     private static ResourceManager _instance;
