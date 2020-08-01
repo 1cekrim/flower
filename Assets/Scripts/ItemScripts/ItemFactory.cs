@@ -5,14 +5,14 @@ using UnityEngine;
 public class ItemFactory : MonoBehaviour
 {
     private Dictionary<string, Item> allItems;
-    private void Start()
+    public void CreateAllItems()
     {
         allItems = new Dictionary<string, Item>();
         foreach (Transform child in transform)
         {
             IItemFactory factory = child.gameObject.GetComponent<IItemFactory>();
-            Debug.Log("CreateItems: " + child.name);
-            CreateItems(factory);
+            Debug.Log("OperateFactory: " + child.name);
+            OperateFactory(factory);
         }
         // for debug
         foreach (Item item in allItems.Values)
@@ -20,7 +20,7 @@ public class ItemFactory : MonoBehaviour
             InventoryManager.Instance.GetItem(item);
         }
     }
-    public void CreateItems(IItemFactory factory)
+    private void OperateFactory(IItemFactory factory)
     {
         factory.AppendItems(ref allItems);
     }
