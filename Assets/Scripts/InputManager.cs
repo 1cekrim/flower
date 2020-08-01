@@ -93,10 +93,6 @@ public class KeyboardMouseInput : KeyBindInterface
                 z = z % 2 == 0 ? z : z - 1;
                 agent.SetDestination(new Vector3(x, 1, z));
                 Debug.Log(position);
-                // Transform target = hit.collider.gameObject.transform;
-                // Debug.Log(target.position);
-                // Debug.Log(hit.collider.gameObject.name);
-                // agent.SetDestination(new Vector3(hit.transform.position.x, 1, hit.transform.position.y));
             }
         }
     }
