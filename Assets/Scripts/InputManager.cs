@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -29,6 +30,7 @@ public class KeyboardMouseInput : KeyBindInterface
 {
     private Dictionary<KeyCode, InputTypeEnum> keyDict;
     private NavMeshAgent agent;
+    private GameObject windowPanel;
     public KeyBindInterface Init()
     {
         keyDict = new Dictionary<KeyCode, InputTypeEnum>
@@ -41,12 +43,18 @@ public class KeyboardMouseInput : KeyBindInterface
         };
 
         agent = GameManager.Instance.playerObject.GetComponent<NavMeshAgent>();
-
+        windowPanel = GameObject.Find("Canvas").transform.Find("WindowPanel").gameObject;
         return this;
     }
 
     public void Update()
     {
+        // Window가 떠있는 동안에는 모든 기능 비활성화
+        if (windowPanel.activeSelf)
+        {
+            return;
+        }
+
         if (Input.anyKeyDown)
         {
             foreach (var dic in keyDict)
@@ -59,7 +67,6 @@ public class KeyboardMouseInput : KeyBindInterface
         }
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-
         if (scroll != 0)
         {
             if (scroll < 0)
@@ -72,7 +79,7 @@ public class KeyboardMouseInput : KeyBindInterface
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
