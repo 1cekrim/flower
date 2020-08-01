@@ -3144,7 +3144,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: da1981c3ee8ea7e4186a753e15495628, type: 3}
       propertyPath: m_Name
-      value: flower01
+      value: Flower1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: da1981c3ee8ea7e4186a753e15495628, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5407,6 +5407,7 @@ MonoBehaviour:
   - {fileID: 1560257132984952, guid: 5cbae0602ce9acf41a98fda3a353569a, type: 3}
   waterObject: {fileID: 1987422295981978, guid: 4d1a1b8720d1bc3438a87ab19ed6593a,
     type: 3}
+  soilObject: {fileID: 1641819918252310, guid: 13f1670c2e187874784d0f667f9057f5, type: 3}
   mapParent: {fileID: 512244034}
   gridRows: 150
   gridCols: 150
@@ -5455,6 +5456,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   playerObject: {fileID: 6117094}
+  mapCols: 0
+  mapRows: 0
   language: 0
 --- !u!1 &2026549607
 GameObject:
@@ -5728,6 +5731,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.1, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2074069345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074069341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6528a7c9220ef14d81929bb19f64cff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2078430478
 GameObject:
   m_ObjectHideFlags: 0
