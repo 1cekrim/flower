@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -86,13 +87,49 @@ public class KeyboardMouseInput : KeyBindInterface
             var layerMask = 1 << 12;
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
+                Func<float, int> convertWorld = (origin) => {
+                    int result = Mathf.CeilToInt(origin);
+                    result = result % 2 == 0 ? result : result - 1;
+                    return result;
+                };
+                Func<float, int, int> convertGrid = (origin, size) => {
+                    return convertWorld(origin) / 2 + size / 2;
+                };
                 Vector3 position = hit.point;
-                int x = Mathf.CeilToInt(position.x);
-                x = x % 2 == 0 ? x : x - 1;
-                int z = Mathf.CeilToInt(position.z);
-                z = z % 2 == 0 ? z : z - 1;
-                agent.SetDestination(new Vector3(x, 1, z));
-                Debug.Log(position);
+                int col = convertGrid(position.x, GameManager.Instance.mapCols);
+                int row = convertGrid(position.z, GameManager.Instance.mapRows);
+
+                if (GameManager.Instance.mapTile[row, col] == null)
+                {
+                    return;
+                }
+
+                if (!GameManager.Instance.mapTile[row, col].canMove)
+                {
+                    // 해당 칸이 올라갈 수 없는 칸이면, 가장 가까운 곳부터 시계방향으로 8방향 탐색
+                    // TODO: 8방향 다 막혀있으면 다이얼로그 띄우기
+                    Func<int, int> Norm = k => (k == 0 ? 0 : (k > 0 ? 1 : -1));
+                    int playerCol = convertGrid(GameManager.Instance.playerObject.transform.position.x, GameManager.Instance.mapCols);
+                    int playerRow = convertGrid(GameManager.Instance.playerObject.transform.position.z, GameManager.Instance.mapRows);
+                    int dx = (int)(playerCol - col);
+                    int dz = (int)(playerRow - row);
+                    dx = Norm(dx);
+                    dz = Norm(dz);
+                    for (int i = 0; i < 8; ++i)
+                    {
+                        if (GameManager.Instance.mapTile[row + dz, col + dx].canMove)
+                        {
+                            row += dz;
+                            col += dx;
+                            break;
+                        }
+                        int tx = Norm(dx + dz);
+                        dz = Norm(dz - dx);
+                        dx = tx;
+                    }
+                }
+
+                agent.SetDestination(GameManager.Instance.mapTile[row, col].transform.position + new Vector3(0, 1, 0));
             }
         }
     }

@@ -33,6 +33,8 @@ public class InitIngameMap : MonoBehaviour
         // TODO: 맵을 처음 생성할 때는 특수효과 넣기
         Debug.Log("InitIngameMap::CreateTile");
         GameManager.Instance.mapTile = new FloorTile[gridRows, gridCols];
+        GameManager.Instance.mapCols = gridCols;
+        GameManager.Instance.mapRows = gridRows;
         Quaternion waterRotation = Quaternion.identity;
         waterRotation.eulerAngles = new Vector3(90, 0, 0);
         Vector3 center = new Vector3((int)(gridCols / 2), 0, (int)(gridRows / 2)) * cellSize;
@@ -110,7 +112,7 @@ public class InitIngameMap : MonoBehaviour
                     }
                     else
                     {
-                        var obj = Instantiate(waterObject, new Vector3(nx, 0.5f, ny) * cellSize - center, waterRotation) as GameObject;
+                        var obj = Instantiate(waterObject, new Vector3(nx, 0, ny) * cellSize - center, waterRotation) as GameObject;
                         obj.transform.parent = mapParent.transform;
                         FloorTile ft = obj.AddComponent<FloorTile>();
                         ft.canMove = false;
