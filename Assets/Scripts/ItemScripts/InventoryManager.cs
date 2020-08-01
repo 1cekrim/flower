@@ -13,7 +13,8 @@ public class InventoryManager : MonoBehaviour
     private static InventoryManager _instance;
     public static InventoryManager Instance
     {
-        get {
+        get
+        {
             if (!_instance)
             {
                 _instance = FindObjectOfType(typeof(InventoryManager)) as InventoryManager;
@@ -35,10 +36,11 @@ public class InventoryManager : MonoBehaviour
         inventory = new Dictionary<string, Item>();
     }
 
-    public GameObject CreateSellButton()
+    public GameObject CreateSellButton<T>(T saleAbleItem) where T : Item, ISaleAble
     {
         GameObject button = Instantiate(ItemButtonPrefab, Vector3.zero, Quaternion.identity);
         button.transform.Find("Text").GetComponent<Text>().text = "판매";
+        button.GetComponent<Button>().onClick.AddListener(() => { TradeManager.Instance.Sale(saleAbleItem); });
         return button;
     }
 
@@ -57,6 +59,17 @@ public class InventoryManager : MonoBehaviour
         item.Component.SetItem(item);
         item.Component.ItemCount = count;
         inventory.Add(item.Id, item);
+        return true;
+    }
+
+    public bool RemoveItem(Item item, int count = 1)
+    {
+        ItemComponent itemComponent = inventory[item.Id].Component;
+        if (itemComponent.ItemCount < count)
+        {
+            return false;
+        }
+        itemComponent.ItemCount -= count;
         return true;
     }
 }

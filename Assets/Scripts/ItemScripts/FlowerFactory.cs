@@ -109,10 +109,12 @@ public class FlowerFactory : MonoBehaviour, IItemFactory
     }
 }
 
-public class Flower : Item
+public class Flower : Item, ISaleAble
 {
     private FlowerKind kind;
     private FlowerColor color;
+    // TODO: 교배 단계 Rank 구현해야함
+    public int Rank = 1;
     public Flower(FlowerKind kind, FlowerColor color, string id) : base(id)
     {
         this.kind = kind;
@@ -123,7 +125,14 @@ public class Flower : Item
     {
         Component.ItemName = Name;
         Component.ItemTexture = Resources.Load("ItemPNG/flower") as Texture;
-        GameObject button = InventoryManager.Instance.CreateSellButton();
+        GameObject button = InventoryManager.Instance.CreateSellButton(this);
         Component.AddButton(button);
+    }
+    public int SalePrice
+    {
+        get
+        {
+            return (int)(500 * (Rank + 1) * 1.5);
+        }
     }
 }

@@ -58,6 +58,7 @@ public class ItemComponent : MonoBehaviour
             itemCountInt = value;
             itemCount.text = value.ToString();
             itemCountBox.SetActive(value > 1);
+            gameObject.SetActive(value > 0);
         }
     }
 

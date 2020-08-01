@@ -17,12 +17,12 @@ public class SeedFactory : MonoBehaviour, IItemFactory
         {
             Seed seed = new Seed(flower);
             items.Add(seed.Id, seed);
-            PurchaseManager.Instance.AddPurchaseButton(seed);
+            TradeManager.Instance.AddPurchaseButton(seed);
         }
     }
 }
 
-public class Seed : Item, IPurchaseAble
+public class Seed : Item, IPurchaseAble, ISaleAble
 {
     private Flower flower;
     private Texture texture;
@@ -35,7 +35,7 @@ public class Seed : Item, IPurchaseAble
     {
         Component.ItemName = flower.Name;
         Component.ItemTexture = texture;
-        GameObject button = InventoryManager.Instance.CreateSellButton();
+        GameObject button = InventoryManager.Instance.CreateSellButton(this);
         Component.AddButton(button);
     }
 
@@ -51,6 +51,14 @@ public class Seed : Item, IPurchaseAble
         get
         {
             return 500;
+        }
+    }
+
+    public int SalePrice
+    {
+        get
+        {
+            return PurchasePrice / 4;
         }
     }
 
