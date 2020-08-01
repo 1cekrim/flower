@@ -22,13 +22,17 @@ public class PurchaseButton : MonoBehaviour
     public void Purchase()
     {
         // TODO: 살건지 물어보는 다이얼로그 띄우기
-        // if (ResourceManager.Instance.ChangeGold(-goodsPriceInt))
-        // {
-        //     InventoryManager.Instance.GetItem()
-        // }
+        if (ResourceManager.Instance.ChangeGold(-goodsPriceInt))
+        {
+            InventoryManager.Instance.GetItem(GoodsItem);
+        }
         // TODO: 돈 부족하면 부족하다고 다이얼로그 띄우기 <- ResoureManager에서 담당하게 하는 게 좋을 듯
     }
     public IPurchaseAble Goods
+    {
+        get; set;
+    }
+    public Item GoodsItem
     {
         get; set;
     }

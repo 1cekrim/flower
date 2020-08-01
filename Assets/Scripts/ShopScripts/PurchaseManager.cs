@@ -74,12 +74,13 @@ public class PurchaseManager : MonoBehaviour
         }
     }
 
-    public void AddPurchaseButton(IPurchaseAble purchaseAble)
+    public void AddPurchaseButton<T>(T purchaseAble) where T : Item, IPurchaseAble 
     {
         GameObject obj = Instantiate(PurchaseButtonPrefab, Vector3.zero, Quaternion.identity);
         PurchaseButton purchaseButton = obj.GetComponent<PurchaseButton>();
         purchaseButton.GoodsPrice = purchaseAble.PurchasePrice;
         purchaseButton.Goods = purchaseAble;
+        purchaseButton.GoodsItem = purchaseAble;
         purchaseAble.PurchaseButtonObject = purchaseButton;
         purchaseAble.UpdatePurchaseButton();
         purchaseAbles.Add(purchaseAble);

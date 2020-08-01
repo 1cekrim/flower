@@ -213,6 +213,7 @@ MonoBehaviour:
   goodsImage: {fileID: 6034814081086598081}
   goodsNameText: {fileID: 6034814079903580534}
   goodsPrice: {fileID: 6034814081777860581}
+  buttonComponent: {fileID: 6034814080017596089}
 --- !u!1 &6034814081086598083
 GameObject:
   m_ObjectHideFlags: 0

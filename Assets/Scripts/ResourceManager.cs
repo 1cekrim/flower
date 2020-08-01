@@ -30,6 +30,11 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
+    public void ChangeGoldNoReturn(int amount)
+    {
+        ChangeGold(amount);
+    }
+
     private int level;
     public int Level
     {
