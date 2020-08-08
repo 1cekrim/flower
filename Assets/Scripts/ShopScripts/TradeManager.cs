@@ -72,6 +72,7 @@ public class TradeManager : MonoBehaviour
             purchaseCategory.CategoryName = name.Translate();
             categories.Add(name, purchaseCategory);
             category.transform.SetParent(PurchaseCategoryContent.transform);
+            category.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         }
     }
 
