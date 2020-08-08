@@ -86,6 +86,7 @@ public class KeyboardMouseInput : KeyBindInterface
             var layerMask = 1 << 12;
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
+                NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.RemoveAllListeners();
                 (int col, int row) = GetRayCastTargetCoord(hit);
                 NavigationManager.Instance.MoveToCoord(col, row);
             }
@@ -100,6 +101,7 @@ public class KeyboardMouseInput : KeyBindInterface
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
                 (int col, int row) = GetRayCastTargetCoord(hit);
+                NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.RemoveAllListeners();
                 NavigationManager.Instance.MoveToCoord(col, row, true);
                 FloorTile target = GameManager.Instance.mapTile[row, col];
                 NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.AddListener(() =>
