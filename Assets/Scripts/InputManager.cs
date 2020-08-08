@@ -100,7 +100,7 @@ public class KeyboardMouseInput : KeyBindInterface
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
                 (int col, int row) = GetRayCastTargetCoord(hit);
-                NavigationManager.Instance.MoveToCoord(col, row);
+                NavigationManager.Instance.MoveToCoord(col, row, true);
                 FloorTile target = GameManager.Instance.mapTile[row, col];
                 NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.AddListener(() =>
                 {

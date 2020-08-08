@@ -59,6 +59,7 @@ public class FloorTile : MonoBehaviour
 
 public interface ITileState
 {
+    FloorTile Tile { get; }
     ITileState Init(FloorTile tile);
     void Interact();
 }
@@ -68,20 +69,24 @@ namespace TileState
     public class PlantableGrassTile : ITileState
     {
         private static PlantSeedDialog plantSeedDialog;
-        private FloorTile flootTile;
+        private FloorTile floorTile;
+        public FloorTile Tile
+        {
+            get => floorTile;
+        }
         public ITileState Init(FloorTile tile)
         {
             if (plantSeedDialog == null)
             {
                 plantSeedDialog = GameObject.Find("InteractCanvas").transform.Find("PlantSeedDialog").gameObject.GetComponent<PlantSeedDialog>();
             }
-            flootTile = tile;
+            floorTile = tile;
             return this;
         }
 
         public void Interact()
         {
-            plantSeedDialog.UpdateDialog(flootTile);
+            plantSeedDialog.UpdateDialog(floorTile);
             plantSeedDialog.MoveDialog(true);
         }
     }
@@ -89,6 +94,11 @@ namespace TileState
     public class CompleteFlower : ITileState
     {
         private static InteractDialog interactDialog;
+        private FloorTile floorTile;
+        public FloorTile Tile
+        {
+            get => floorTile;
+        }
         public ITileState Init(FloorTile tile)
         {
             if (interactDialog == null)
@@ -96,7 +106,9 @@ namespace TileState
                 interactDialog = GameObject.Find("InteractCanvas").transform.Find("InteractDialog").gameObject.GetComponent<InteractDialog>();
             }
             GameObject.Destroy(tile.aboveBlock);
-            tile.aboveBlock = GameObject.Instantiate(Resources.Load("blocks/CompleteFlower") as GameObject, tile.transform.position + Vector3.up * 2, Quaternion.identity);
+            tile.aboveBlock = BlockFactory.Instance.CreateBlock("CompleteFlower", tile.transform);
+            floorTile = tile;
+            Tile.canMove = false;
             return this;
         }
 

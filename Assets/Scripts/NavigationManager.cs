@@ -69,14 +69,14 @@ public class NavigationManager : MonoBehaviour
         player.DORotate(lookRotation.eulerAngles, 0.5f);
     }
 
-    public void MoveToCoord(int col, int row)
+    public void MoveToCoord(int col, int row, bool onlyAround = false)
     {
         if (GameManager.Instance.mapTile[row, col] == null)
         {
             return;
         }
 
-        if (!GameManager.Instance.mapTile[row, col].canMove)
+        if (onlyAround || !GameManager.Instance.mapTile[row, col].canMove)
         {
             // 해당 칸이 올라갈 수 없는 칸이면, 가장 가까운 곳부터 시계방향으로 8방향 탐색
             // TODO: 8방향 다 막혀있으면 다이얼로그 띄우기
