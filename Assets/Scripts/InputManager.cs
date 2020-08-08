@@ -33,7 +33,6 @@ public class KeyboardMouseInput : KeyBindInterface
 {
     private Dictionary<KeyCode, InputTypeEnum> keyDict;
     private NavMeshAgent agent;
-    private GameObject windowPanel;
     public KeyBindInterface Init()
     {
         keyDict = new Dictionary<KeyCode, InputTypeEnum>
@@ -46,14 +45,12 @@ public class KeyboardMouseInput : KeyBindInterface
         };
 
         agent = GameManager.Instance.playerObject.GetComponent<NavMeshAgent>();
-        windowPanel = GameObject.Find("WindowCanvas").transform.Find("WindowPanel").gameObject;
         return this;
     }
 
     public void Update()
     {
-        // Window가 떠있는 동안에는 모든 기능 비활성화
-        if (windowPanel.activeSelf)
+        if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
