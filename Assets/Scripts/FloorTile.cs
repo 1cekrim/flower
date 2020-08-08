@@ -122,6 +122,36 @@ namespace TileState
         }
     }
 
+    public class SeedFlower : FlowerState, ITileState
+    {
+        private static FlowerDialog flowerDialog;
+        private FloorTile floorTile;
+        
+        public FloorTile Tile => floorTile;
+        
+        public SeedFlower(Seed seed) : base(seed, 1)
+        {
+        }
+        public ITileState Init(FloorTile tile)
+        {
+            if (flowerDialog == null)
+            {
+                flowerDialog = GameObject.Find("InteractCanvas").transform.Find("FlowerDialog").gameObject.GetComponent<FlowerDialog>();
+            }
+            GameObject.Destroy(tile.aboveBlock);
+            tile.aboveBlock = BlockFactory.Instance.CreateBlock("SeedFlower", tile.transform);
+            floorTile = tile;
+            Tile.canMove = false;
+            return this;
+        }
+
+        public void Interact()
+        {
+            flowerDialog.UpdateDialog<SeedFlower>(floorTile, this);
+            flowerDialog.MoveDialog(true);
+        }
+    }
+
     public class CompleteFlower : FlowerState, ITileState
     {
         private static FlowerDialog flowerDialog;

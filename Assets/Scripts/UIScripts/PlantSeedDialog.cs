@@ -36,7 +36,7 @@ public class PlantSeedDialog : InteractDialog
             button.onClick.AddListener(() => {
                 MoveDialog(false);
                 InventoryManager.Instance.RemoveItem(seed);
-                floorTile.State = new TileState.CompleteFlower(seed).Init(floorTile);
+                floorTile.State = new TileState.SeedFlower(seed).Init(floorTile);
             });
         }
     }
