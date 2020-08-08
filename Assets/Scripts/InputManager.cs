@@ -104,7 +104,7 @@ public class KeyboardMouseInput : KeyBindInterface
                 FloorTile target = GameManager.Instance.mapTile[row, col];
                 NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.AddListener(() =>
                 {
-                    target.State?.Interact();
+                    target?.State?.Interact();
                 });
             }
         }
