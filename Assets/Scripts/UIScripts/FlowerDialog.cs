@@ -27,8 +27,8 @@ public class FlowerDialog : InteractDialog
             getFlowerButton.onClick.RemoveAllListeners();
             getFlowerButton.onClick.AddListener(() =>
             {
-                // TODO: 꽃(4) State를 줄기(2) State로 바꿔야 함
                 InventoryManager.Instance.GetItem(state.seed.Flower);
+                floorTile.State = new TileState.StemFlower(state.seed).Init(floorTile);
                 MoveDialog(false);
             });
         }
@@ -37,6 +37,12 @@ public class FlowerDialog : InteractDialog
         {
             floorTile.State = new TileState.PlantableGrassTile().Init(floorTile);
             Destroy(floorTile.aboveBlock);
+            MoveDialog(false);
+        });
+        sprinklerButton.onClick.RemoveAllListeners();
+        sprinklerButton.onClick.AddListener(() =>
+        {
+            state.ToNextFlowerState();
             MoveDialog(false);
         });
     }

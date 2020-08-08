@@ -114,9 +114,10 @@ namespace TileState
             {
                 flowerDialog = GameObject.Find("InteractCanvas").transform.Find("FlowerDialog").gameObject.GetComponent<FlowerDialog>();
             }
-            GameObject.Destroy(tile.aboveBlock);
-            tile.aboveBlock = BlockFactory.Instance.CreateBlock(prefabName, tile.transform);;
             floorTile = tile;
+            GameObject.Destroy(Tile.aboveBlock);
+            Tile.aboveBlock = BlockFactory.Instance.CreateBlock(prefabName, Tile.transform);
+            Debug.Log(Tile.aboveBlock.name);
             Tile.canMove = false;
             return this;
         }
@@ -139,6 +140,7 @@ namespace TileState
             }
         }
         public abstract void Interact();
+        public abstract void ToNextFlowerState();
     }
 
     public class SeedFlower : FlowerState
@@ -152,6 +154,44 @@ namespace TileState
             flowerDialog.UpdateDialog<SeedFlower>(Tile, this);
             flowerDialog.MoveDialog(true);
         }
+        public override void ToNextFlowerState()
+        {
+            Tile.State = new StemFlower(seed).Init(Tile);
+        }
+    }
+
+    public class StemFlower : FlowerState
+    {
+        public StemFlower(Seed seed) : base(seed, 2, "StemFlower")
+        {
+            // Do nothing
+        }
+        public override void Interact()
+        {
+            flowerDialog.UpdateDialog<StemFlower>(Tile, this);
+            flowerDialog.MoveDialog(true);
+        } 
+        public override void ToNextFlowerState()
+        {
+            Tile.State = new BudFlower(seed).Init(Tile);
+        }
+    }
+
+    public class BudFlower : FlowerState
+    {
+        public BudFlower(Seed seed) : base(seed, 3, "BudFlower")
+        {
+            // Do nothing
+        }
+        public override void Interact()
+        {
+            flowerDialog.UpdateDialog<BudFlower>(Tile, this);
+            flowerDialog.MoveDialog(true);
+        }
+        public override void ToNextFlowerState()
+        {
+            Tile.State = new CompleteFlower(seed).Init(Tile);
+        }
     }
 
     public class CompleteFlower : FlowerState
@@ -164,6 +204,10 @@ namespace TileState
         {
             flowerDialog.UpdateDialog<CompleteFlower>(Tile, this);
             flowerDialog.MoveDialog(true);
+        }
+        public override void ToNextFlowerState()
+        {
+            Tile.State = new CompleteFlower(seed).Init(Tile);
         }
     }
 }
