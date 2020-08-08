@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using DG.Tweening;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -102,7 +104,9 @@ public class KeyboardMouseInput : KeyBindInterface
             {
                 (int col, int row) = GetRayCastTargetCoord(hit);
                 MoveToCoord(col, row);
-                GameManager.Instance.mapTile[row, col].State?.Interact();
+                // TODO: NavMeshAgent에 도착 콜백이 없어서 직접 구현해야 함
+                // RotateAgentToTarget(hit.transform);
+                // GameManager.Instance.mapTile[row, col].State?.Interact();
             }
         }
     }
@@ -125,6 +129,14 @@ public class KeyboardMouseInput : KeyBindInterface
     private int convertGrid(float origin, int size)
     {
         return convertWorld(origin) / 2 + size / 2;
+    }
+
+    private void RotateAgentToTarget(Transform target)
+    {
+        Transform player = GameManager.Instance.playerObject.transform;
+        Vector3 direction = new Vector3(0, 0, (target.position - player.position.normalized).z);
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        player.DORotate(lookRotation.eulerAngles, 0.5f);
     }
 
     private void MoveToCoord(int col, int row)
