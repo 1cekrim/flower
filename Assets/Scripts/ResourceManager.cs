@@ -35,7 +35,7 @@ public class ResourceManager : MonoBehaviour
         ChangeGold(amount);
     }
 
-    private int level;
+    private int level = 1;
     public int Level
     {
         get
@@ -70,10 +70,13 @@ public class ResourceManager : MonoBehaviour
             changeExpEvent.Invoke();
             return;
         }
-        exp -= MaxExp;
-        changeExpEvent.Invoke();
-        ++level;
-        levelUpEvent.Invoke();
+        while (exp >= MaxExp)
+        {
+            exp -= MaxExp;
+            changeExpEvent.Invoke();
+            ++level;
+            levelUpEvent.Invoke();
+        }
     }
 
     private int sprinkler;

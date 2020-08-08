@@ -9,6 +9,7 @@ public class LevelText : MonoBehaviour
     private void Awake()
     {
         text = GetComponent<Text>();
+        UpdateText();
     }
     private void Start()
     {
@@ -16,6 +17,10 @@ public class LevelText : MonoBehaviour
     }
     public void UpdateText()
     {
+        if (text == null)
+        {
+            return;
+        }
         if (ResourceManager.Instance.Level / 10 == 0)
         {
             text.text = "Lv. " + ResourceManager.Instance.Level.ToString();
