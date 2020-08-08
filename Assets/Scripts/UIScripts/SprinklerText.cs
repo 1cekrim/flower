@@ -9,6 +9,7 @@ public class SprinklerText : MonoBehaviour
     private void Awake()
     {
         text = GetComponent<Text>();
+        UpdateText();
     }
     private void Start()
     {
@@ -16,6 +17,10 @@ public class SprinklerText : MonoBehaviour
     }
     public void UpdateText()
     {
+        if (text == null)
+        {
+            return;
+        }
         text.text = ResourceManager.Instance.Sprinkler.ToString() + "/" + ResourceManager.Instance.MaxSprinkler.ToString();
     }
 }

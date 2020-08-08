@@ -6,6 +6,7 @@ public class InitIngameMap : MonoBehaviour
 {
     public GameObject[] tileObjects = new GameObject[2];
     public GameObject waterObject;
+    public GameObject soilObject;
     public GameObject mapParent;
     public int gridRows;
     public int gridCols;
@@ -32,11 +33,13 @@ public class InitIngameMap : MonoBehaviour
         // TODO: 맵을 처음 생성할 때는 특수효과 넣기
         Debug.Log("InitIngameMap::CreateTile");
         GameManager.Instance.mapTile = new FloorTile[gridRows, gridCols];
+        GameManager.Instance.mapCols = gridCols;
+        GameManager.Instance.mapRows = gridRows;
         Quaternion waterRotation = Quaternion.identity;
         waterRotation.eulerAngles = new Vector3(90, 0, 0);
         Vector3 center = new Vector3((int)(gridCols / 2), 0, (int)(gridRows / 2)) * cellSize;
         float maxDist = Mathf.Sqrt(gridCols * gridCols + gridRows * gridRows);
-        bool[,] map = new bool[gridRows, gridCols];
+        TileEnum[,] map = new TileEnum[gridRows, gridCols];
 
         // Perlin noise 값에, 섬 중심으로부터의 거리에 비례하는 dist를 뺀 후 .05f를 더한다
         // 이 값이 0.5f보다 크면 땅이라는 표시로 map[i, j]를 true로, 아니면 물이라는 표시로 map[i, j]를 false로 한다
@@ -49,13 +52,17 @@ public class InitIngameMap : MonoBehaviour
                 dist /= maxDist / 2.5f;
                 var perlin = Mathf.PerlinNoise((float)i / (float)gridRows * 8 + seed, (float)j / gridCols * 8 + seed) - dist + .05f;
 
-                if (perlin > .05f)
+                if (perlin > .2f)
                 {
-                    map[i, j] = true;
+                    map[i, j] = TileEnum.grass;
+                }
+                else if (perlin > .05f)
+                {
+                    map[i, j] = TileEnum.soil;
                 }
                 else
                 {
-                    map[i, j] = false;
+                    map[i, j] = TileEnum.water;
                 }
             }
         }
@@ -65,7 +72,7 @@ public class InitIngameMap : MonoBehaviour
         // 땅과 닿아있는 물 부분에는 waterObject를 Instantiate해 상호작용이 가능하게 한다
         Queue<Pair<int, int>> q = new Queue<Pair<int, int>>();
         q.Enqueue(new Pair<int, int>((int)(gridCols / 2), (int)(gridRows / 2)));
-        map[(int)(gridRows / 2), (int)(gridCols / 2)] = false;
+        // map[(int)(gridRows / 2), (int)(gridCols / 2)] = false;
         bool[,] check = new bool[gridRows, gridCols];
         check.Initialize();
         check[(int)(gridRows / 2), (int)(gridCols / 2)] = true;
@@ -77,7 +84,15 @@ public class InitIngameMap : MonoBehaviour
             int x = top.First;
             int y = top.Second;
             {
-                var obj = Instantiate(tileObjects[(y + x) % 2], new Vector3(x, 0, y) * cellSize - center, Quaternion.identity) as GameObject;
+                GameObject obj;
+                if (map[y, x] == TileEnum.grass)
+                {
+                    obj = Instantiate(tileObjects[(y + x) % 2], new Vector3(x, 0, y) * cellSize - center, Quaternion.identity) as GameObject;
+                }
+                else
+                {
+                    obj = Instantiate(soilObject, new Vector3(x, 0, y) * cellSize - center, Quaternion.identity) as GameObject;
+                }
                 obj.transform.parent = mapParent.transform;
                 FloorTile ft = obj.AddComponent<FloorTile>();
                 ft.canMove = true;
@@ -91,13 +106,13 @@ public class InitIngameMap : MonoBehaviour
                 if (nx >= 0 && nx < gridCols && ny >= 0 && ny < gridRows && !check[ny, nx])
                 {
                     check[ny, nx] = true;
-                    if (map[ny, nx])
+                    if (map[ny, nx] == TileEnum.grass || map[ny, nx] == TileEnum.soil)
                     {
                         q.Enqueue(new Pair<int, int>(nx, ny));
                     }
                     else
                     {
-                        var obj = Instantiate(waterObject, new Vector3(nx, 0.5f, ny) * cellSize - center, waterRotation) as GameObject;
+                        var obj = Instantiate(waterObject, new Vector3(nx, 0, ny) * cellSize - center, waterRotation) as GameObject;
                         obj.transform.parent = mapParent.transform;
                         FloorTile ft = obj.AddComponent<FloorTile>();
                         ft.canMove = false;

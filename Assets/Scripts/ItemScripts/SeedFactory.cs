@@ -25,6 +25,10 @@ public class SeedFactory : MonoBehaviour, IItemFactory
 public class Seed : Item, IPurchaseAble, ISaleAble
 {
     private Flower flower;
+    public Flower Flower
+    {
+        get => flower;
+    }
     private Texture texture;
     public Seed(Flower flower) : base(flower.Id + "_seed")
     {
@@ -37,6 +41,12 @@ public class Seed : Item, IPurchaseAble, ISaleAble
         Component.ItemTexture = texture;
         GameObject button = InventoryManager.Instance.CreateSellButton(this);
         Component.AddButton(button);
+    }
+
+    public void UpdatePlantSeedDialogElement(ItemComponent component)
+    {
+        component.ItemName = flower.Name;
+        component.ItemTexture = texture;
     }
 
     public void UpdatePurchaseButton()

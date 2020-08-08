@@ -15,10 +15,10 @@ public class ItemFactory : MonoBehaviour
             OperateFactory(factory);
         }
         // for debug
-        foreach (Item item in allItems.Values)
-        {
-            InventoryManager.Instance.GetItem(item);
-        }
+        // foreach (Item item in allItems.Values)
+        // {
+        //     InventoryManager.Instance.GetItem(item);
+        // }
     }
     private void OperateFactory(IItemFactory factory)
     {

@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -30,7 +33,6 @@ public class KeyboardMouseInput : KeyBindInterface
 {
     private Dictionary<KeyCode, InputTypeEnum> keyDict;
     private NavMeshAgent agent;
-    private GameObject windowPanel;
     public KeyBindInterface Init()
     {
         keyDict = new Dictionary<KeyCode, InputTypeEnum>
@@ -43,14 +45,12 @@ public class KeyboardMouseInput : KeyBindInterface
         };
 
         agent = GameManager.Instance.playerObject.GetComponent<NavMeshAgent>();
-        windowPanel = GameObject.Find("Canvas").transform.Find("WindowPanel").gameObject;
         return this;
     }
 
     public void Update()
     {
-        // Window가 떠있는 동안에는 모든 기능 비활성화
-        if (windowPanel.activeSelf)
+        if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
@@ -79,28 +79,46 @@ public class KeyboardMouseInput : KeyBindInterface
             }
         }
 
-        if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
+        if (Input.GetMouseButtonDown(1) && EventSystem.current.IsPointerOverGameObject() == false)
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             var layerMask = 1 << 12;
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
-                Vector3 position = hit.point;
-                int x = Mathf.CeilToInt(position.x);
-                x = x % 2 == 0 ? x : x - 1;
-                int z = Mathf.CeilToInt(position.z);
-                z = z % 2 == 0 ? z : z - 1;
-                agent.SetDestination(new Vector3(x, 1, z));
-                Debug.Log(position);
-                // Transform target = hit.collider.gameObject.transform;
-                // Debug.Log(target.position);
-                // Debug.Log(hit.collider.gameObject.name);
-                // agent.SetDestination(new Vector3(hit.transform.position.x, 1, hit.transform.position.y));
+                NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.RemoveAllListeners();
+                (int col, int row) = GetRayCastTargetCoord(hit);
+                NavigationManager.Instance.MoveToCoord(col, row);
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
+        {
+            // 좌클릭 하면 상호작용
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var layerMask = 1 << 12;
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+            {
+                (int col, int row) = GetRayCastTargetCoord(hit);
+                NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.RemoveAllListeners();
+                NavigationManager.Instance.MoveToCoord(col, row, true);
+                FloorTile target = GameManager.Instance.mapTile[row, col];
+                NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.AddListener(() =>
+                {
+                    target?.State?.Interact();
+                });
             }
         }
     }
+
+    private (int col, int row) GetRayCastTargetCoord(RaycastHit hit)
+    {
+        Vector3 position = hit.point;
+        return NavigationManager.Instance.ConvertGrid(position.x, position.z);
+    }
 }
+
 
 public class InputManager : MonoBehaviour
 {
@@ -178,12 +196,12 @@ public class InputManager : MonoBehaviour
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(InputManager))]
-public class InputManagerEditor : Editor 
+public class InputManagerEditor : Editor
 {
     public InputTypeEnum selected;
     public override void OnInspectorGUI()
     {
-        DrawDefaultInspector ();
+        DrawDefaultInspector();
         EditorGUILayout.LabelField("Raise Event");
         InputManager inputManager = (InputManager)target;
         selected = (InputTypeEnum)EditorGUILayout.EnumPopup("selected event", selected);
