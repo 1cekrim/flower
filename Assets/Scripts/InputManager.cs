@@ -102,7 +102,7 @@ public class KeyboardMouseInput : KeyBindInterface
             {
                 (int col, int row) = GetRayCastTargetCoord(hit);
                 MoveToCoord(col, row);
-                // GameManager.Instance.mapTile[row, col].
+                GameManager.Instance.mapTile[row, col].State?.Interact();
             }
         }
     }
