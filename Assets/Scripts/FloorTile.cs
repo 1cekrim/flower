@@ -103,7 +103,7 @@ namespace TileState
         {
             if (interactDialog == null)
             {
-                interactDialog = GameObject.Find("InteractCanvas").transform.Find("InteractDialog").gameObject.GetComponent<InteractDialog>();
+                interactDialog = GameObject.Find("InteractCanvas").transform.Find("FlowerDialog").gameObject.GetComponent<FlowerDialog>();
             }
             GameObject.Destroy(tile.aboveBlock);
             tile.aboveBlock = BlockFactory.Instance.CreateBlock("CompleteFlower", tile.transform);
