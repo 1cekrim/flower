@@ -14,7 +14,7 @@ public class PlantSeedDialog : InteractDialog
             GameObject.Destroy(child.gameObject);
         }
     }
-    public void UpdateDialog()
+    public void UpdateDialog(FloorTile floorTile)
     {
         InitDialog();
         List<Seed> seeds = InventoryManager.Instance.SearchItem<Seed>();
@@ -31,8 +31,12 @@ public class PlantSeedDialog : InteractDialog
             seed.UpdatePlantSeedDialogElement(component);
             // TODO: SeedDialogElementComponent 따로 만들어서 GetComponent 호출 줄이기
             Button button = obj.GetComponent<Button>();
+            // TODO: 좀 더러운 구조니 다른 방법 생각나면 고치기
+            // TODO: CompleteFlower State 말고 Seed State로 나중에 바꾸기
             button.onClick.AddListener(() => {
-
+                MoveDialog(false);
+                InventoryManager.Instance.RemoveItem(seed);
+                floorTile.State = new TileState.CompleteFlower().Init(floorTile);
             });
         }
     }

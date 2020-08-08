@@ -7,6 +7,7 @@ public enum TileEnum
     grass,
     water,
     soil,
+    seed,
     flower
 }
 
@@ -24,9 +25,11 @@ public class FloorTile : MonoBehaviour
         set
         {
             state = value;
-            state.Init();
+            state.Init(this);
         }
     }
+
+    public GameObject aboveBlock;
 
     private void Awake()
     {
@@ -38,14 +41,17 @@ public class FloorTile : MonoBehaviour
         switch (tileEnum)
         {
             case TileEnum.grass:
-                state = new TileState.PlantableGrassTile().Init();
+                state = new TileState.PlantableGrassTile().Init(this);
                 break;
             case TileEnum.water:
                 break;
             case TileEnum.soil:
                 break;
+            case TileEnum.seed:
+                state = new TileState.CompleteFlower().Init(this);
+                break;
             case TileEnum.flower:
-                state = new TileState.CompleteFlower().Init();
+                state = new TileState.CompleteFlower().Init(this);
                 break;
         }
     }
@@ -53,7 +59,7 @@ public class FloorTile : MonoBehaviour
 
 public interface ITileState
 {
-    ITileState Init();
+    ITileState Init(FloorTile tile);
     void Interact();
 }
 
@@ -62,18 +68,20 @@ namespace TileState
     public class PlantableGrassTile : ITileState
     {
         private static PlantSeedDialog plantSeedDialog;
-        public ITileState Init()
+        private FloorTile flootTile;
+        public ITileState Init(FloorTile tile)
         {
             if (plantSeedDialog == null)
             {
                 plantSeedDialog = GameObject.Find("InteractCanvas").transform.Find("PlantSeedDialog").gameObject.GetComponent<PlantSeedDialog>();
             }
+            flootTile = tile;
             return this;
         }
 
         public void Interact()
         {
-            plantSeedDialog.UpdateDialog();
+            plantSeedDialog.UpdateDialog(flootTile);
             plantSeedDialog.MoveDialog(true);
         }
     }
@@ -81,12 +89,14 @@ namespace TileState
     public class CompleteFlower : ITileState
     {
         private static InteractDialog interactDialog;
-        public ITileState Init()
+        public ITileState Init(FloorTile tile)
         {
             if (interactDialog == null)
             {
                 interactDialog = GameObject.Find("InteractCanvas").transform.Find("InteractDialog").gameObject.GetComponent<InteractDialog>();
             }
+            GameObject.Destroy(tile.aboveBlock);
+            tile.aboveBlock = GameObject.Instantiate(Resources.Load("blocks/CompleteFlower") as GameObject, tile.transform.position + Vector3.up * 2, Quaternion.identity);
             return this;
         }
 
