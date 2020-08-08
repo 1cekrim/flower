@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using DG.Tweening;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -90,7 +90,7 @@ public class KeyboardMouseInput : KeyBindInterface
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
                 (int col, int row) = GetRayCastTargetCoord(hit);
-                MoveToCoord(col, row);
+                NavigationManager.Instance.MoveToCoord(col, row);
             }
         }
 
@@ -103,7 +103,7 @@ public class KeyboardMouseInput : KeyBindInterface
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
                 (int col, int row) = GetRayCastTargetCoord(hit);
-                MoveToCoord(col, row);
+                NavigationManager.Instance.MoveToCoord(col, row);
                 // TODO: NavMeshAgent에 도착 콜백이 없어서 직접 구현해야 함
                 // RotateAgentToTarget(hit.transform);
                 // GameManager.Instance.mapTile[row, col].State?.Interact();
@@ -114,65 +114,7 @@ public class KeyboardMouseInput : KeyBindInterface
     private (int col, int row) GetRayCastTargetCoord(RaycastHit hit)
     {
         Vector3 position = hit.point;
-        int col = convertGrid(position.x, GameManager.Instance.mapCols);
-        int row = convertGrid(position.z, GameManager.Instance.mapRows);
-        return (col, row);
-    }
-
-    private int convertWorld(float origin)
-    {
-        int result = Mathf.CeilToInt(origin);
-        result = result % 2 == 0 ? result : result - 1;
-        return result;
-    }
-
-    private int convertGrid(float origin, int size)
-    {
-        return convertWorld(origin) / 2 + size / 2;
-    }
-
-    private void RotateAgentToTarget(Transform target)
-    {
-        Transform player = GameManager.Instance.playerObject.transform;
-        Vector3 direction = new Vector3(0, 0, (target.position - player.position.normalized).z);
-        Quaternion lookRotation = Quaternion.LookRotation(direction);
-        player.DORotate(lookRotation.eulerAngles, 0.5f);
-    }
-
-    private void MoveToCoord(int col, int row)
-    {
-
-        if (GameManager.Instance.mapTile[row, col] == null)
-        {
-            return;
-        }
-
-        if (!GameManager.Instance.mapTile[row, col].canMove)
-        {
-            // 해당 칸이 올라갈 수 없는 칸이면, 가장 가까운 곳부터 시계방향으로 8방향 탐색
-            // TODO: 8방향 다 막혀있으면 다이얼로그 띄우기
-            Func<int, int> Norm = k => (k == 0 ? 0 : (k > 0 ? 1 : -1));
-            int playerCol = convertGrid(GameManager.Instance.playerObject.transform.position.x, GameManager.Instance.mapCols);
-            int playerRow = convertGrid(GameManager.Instance.playerObject.transform.position.z, GameManager.Instance.mapRows);
-            int dx = (int)(playerCol - col);
-            int dz = (int)(playerRow - row);
-            dx = Norm(dx);
-            dz = Norm(dz);
-            for (int i = 0; i < 8; ++i)
-            {
-                if (GameManager.Instance.mapTile[row + dz, col + dx].canMove)
-                {
-                    row += dz;
-                    col += dx;
-                    break;
-                }
-                int tx = Norm(dx + dz);
-                dz = Norm(dz - dx);
-                dx = tx;
-            }
-        }
-
-        agent.SetDestination(GameManager.Instance.mapTile[row, col].transform.position + new Vector3(0, 1, 0));
+        return NavigationManager.Instance.ConvertGrid(position.x, position.z);
     }
 }
 
