@@ -25,6 +25,10 @@ public class SeedFactory : MonoBehaviour, IItemFactory
 public class Seed : Item, IPurchaseAble, ISaleAble
 {
     private Flower flower;
+    public Flower Flower
+    {
+        get => flower;
+    }
     private Texture texture;
     public Seed(Flower flower) : base(flower.Id + "_seed")
     {
