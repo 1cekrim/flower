@@ -44,7 +44,7 @@ public class KeyboardMouseInput : KeyBindInterface
         };
 
         agent = GameManager.Instance.playerObject.GetComponent<NavMeshAgent>();
-        windowPanel = GameObject.Find("Canvas").transform.Find("WindowPanel").gameObject;
+        windowPanel = GameObject.Find("WindowCanvas").transform.Find("WindowPanel").gameObject;
         return this;
     }
 
