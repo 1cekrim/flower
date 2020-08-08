@@ -91,16 +91,34 @@ namespace TileState
         }
     }
 
-    public abstract class FlowerState
+    public abstract class FlowerState : ITileState
     {
+        protected static FlowerDialog flowerDialog;
+        private FloorTile floorTile;
         public readonly Seed seed;
         public readonly int level;
         public const int lastLevel = 4;
         public bool IsComplete => level == lastLevel;
-        public FlowerState(Seed seed, int level)
+        public string prefabName;
+        public FloorTile Tile => floorTile;
+
+        public FlowerState(Seed seed, int level, string prefabName)
         {
             this.seed = seed;
             this.level = level;
+            this.prefabName = prefabName;
+        }
+        public ITileState Init(FloorTile tile)
+        {
+            if (flowerDialog == null)
+            {
+                flowerDialog = GameObject.Find("InteractCanvas").transform.Find("FlowerDialog").gameObject.GetComponent<FlowerDialog>();
+            }
+            GameObject.Destroy(tile.aboveBlock);
+            tile.aboveBlock = BlockFactory.Instance.CreateBlock(prefabName, tile.transform);;
+            floorTile = tile;
+            Tile.canMove = false;
+            return this;
         }
         public string LevelName
         {
@@ -108,76 +126,43 @@ namespace TileState
             {
                 switch (level)
                 {
-                    case 1:     
-                        return "씨앗";  
-                    case 2:       
-                        return "줄기";  
-                    case 3:       
-                        return "꽃봉오리";  
-                    case 4:       
-                        return "꽃";  
+                    case 1:
+                        return "씨앗";
+                    case 2:
+                        return "줄기";
+                    case 3:
+                        return "꽃봉오리";
+                    case 4:
+                        return "꽃";
                 }
                 return "Invalid";
             }
         }
+        public abstract void Interact();
     }
 
-    public class SeedFlower : FlowerState, ITileState
+    public class SeedFlower : FlowerState
     {
-        private static FlowerDialog flowerDialog;
-        private FloorTile floorTile;
-        
-        public FloorTile Tile => floorTile;
-        
-        public SeedFlower(Seed seed) : base(seed, 1)
+        public SeedFlower(Seed seed) : base(seed, 1, "SeedFlower")
         {
+            // Do nothing
         }
-        public ITileState Init(FloorTile tile)
+        public override void Interact()
         {
-            if (flowerDialog == null)
-            {
-                flowerDialog = GameObject.Find("InteractCanvas").transform.Find("FlowerDialog").gameObject.GetComponent<FlowerDialog>();
-            }
-            GameObject.Destroy(tile.aboveBlock);
-            tile.aboveBlock = BlockFactory.Instance.CreateBlock("SeedFlower", tile.transform);
-            floorTile = tile;
-            Tile.canMove = false;
-            return this;
-        }
-
-        public void Interact()
-        {
-            flowerDialog.UpdateDialog<SeedFlower>(floorTile, this);
+            flowerDialog.UpdateDialog<SeedFlower>(Tile, this);
             flowerDialog.MoveDialog(true);
         }
     }
 
-    public class CompleteFlower : FlowerState, ITileState
+    public class CompleteFlower : FlowerState
     {
-        private static FlowerDialog flowerDialog;
-        private FloorTile floorTile;
-        
-        public FloorTile Tile => floorTile;
-        
-        public CompleteFlower(Seed seed) : base(seed, 4)
+        public CompleteFlower(Seed seed) : base(seed, 4, "CompleteFlower")
         {
+            // Do nothing
         }
-        public ITileState Init(FloorTile tile)
+        public override void Interact()
         {
-            if (flowerDialog == null)
-            {
-                flowerDialog = GameObject.Find("InteractCanvas").transform.Find("FlowerDialog").gameObject.GetComponent<FlowerDialog>();
-            }
-            GameObject.Destroy(tile.aboveBlock);
-            tile.aboveBlock = BlockFactory.Instance.CreateBlock("CompleteFlower", tile.transform);
-            floorTile = tile;
-            Tile.canMove = false;
-            return this;
-        }
-
-        public void Interact()
-        {
-            flowerDialog.UpdateDialog<CompleteFlower>(floorTile, this);
+            flowerDialog.UpdateDialog<CompleteFlower>(Tile, this);
             flowerDialog.MoveDialog(true);
         }
     }
