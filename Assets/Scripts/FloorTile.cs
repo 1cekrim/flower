@@ -32,18 +32,20 @@ public class FloorTile : MonoBehaviour
     {
         gameObject.layer = 12;
     }
-    
+
     private void Start()
     {
         switch (tileEnum)
         {
             case TileEnum.grass:
+                state = new TileState.PlantableGrassTile().Init();
                 break;
             case TileEnum.water:
                 break;
             case TileEnum.soil:
                 break;
             case TileEnum.flower:
+                state = new TileState.CompleteFlower().Init();
                 break;
         }
     }
@@ -51,6 +53,45 @@ public class FloorTile : MonoBehaviour
 
 public interface ITileState
 {
-    void Init();
+    ITileState Init();
     void Interact();
+}
+
+namespace TileState
+{
+    public class PlantableGrassTile : ITileState
+    {
+        private static InteractDialog interactDialog;
+        public ITileState Init()
+        {
+            if (interactDialog == null)
+            {
+                interactDialog = GameObject.Find("InteractCanvas").transform.Find("InteractDialog").gameObject.GetComponent<InteractDialog>();
+            }
+            return this;
+        }
+
+        public void Interact()
+        {
+            interactDialog.MoveDialog(true);
+        }
+    }
+
+    public class CompleteFlower : ITileState
+    {
+        private static InteractDialog interactDialog;
+        public ITileState Init()
+        {
+            if (interactDialog == null)
+            {
+                interactDialog = GameObject.Find("InteractCanvas").transform.Find("InteractDialog").gameObject.GetComponent<InteractDialog>();
+            }
+            return this;
+        }
+
+        public void Interact()
+        {
+            interactDialog.MoveDialog(true);
+        }
+    }
 }

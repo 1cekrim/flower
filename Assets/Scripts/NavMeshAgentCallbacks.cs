@@ -32,6 +32,7 @@ public class NavMeshAgentCallbacks : MonoBehaviour
                     {
                         Debug.Log("Move Complete");
                         CompleteEvent?.Invoke();
+                        CompleteEvent?.RemoveAllListeners();
                         yield break;
                     }
                 }

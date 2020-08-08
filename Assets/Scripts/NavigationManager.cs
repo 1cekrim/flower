@@ -10,9 +10,11 @@ public class NavigationManager : MonoBehaviour
     public NavMeshSurface[] surfaces;
     private static NavigationManager _instance;
     private NavMeshAgent agent;
+    public NavMeshAgentCallbacks navMeshAgentCallbacks;
     public static NavigationManager Instance
     {
-        get {
+        get
+        {
             if (!_instance)
             {
                 _instance = FindObjectOfType(typeof(NavigationManager)) as NavigationManager;
@@ -32,6 +34,7 @@ public class NavigationManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         agent = GameManager.Instance.playerObject.GetComponent<NavMeshAgent>();
+        navMeshAgentCallbacks = agent.gameObject.GetComponent<NavMeshAgentCallbacks>();
     }
 
     public void UpdateNavMeshSurfaces()
@@ -60,7 +63,8 @@ public class NavigationManager : MonoBehaviour
     public void RotateAgentToTarget(Transform target)
     {
         Transform player = GameManager.Instance.playerObject.transform;
-        Vector3 direction = new Vector3(0, 0, (target.position - player.position.normalized).z);
+        Vector3 direction = target.position - player.position;
+        direction.y = 0;
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         player.DORotate(lookRotation.eulerAngles, 0.5f);
     }
@@ -86,6 +90,12 @@ public class NavigationManager : MonoBehaviour
             {
                 if (GameManager.Instance.mapTile[row + dz, col + dx].canMove)
                 {
+                    FloorTile target = GameManager.Instance.mapTile[row, col];
+                    navMeshAgentCallbacks.CompleteEvent.AddListener(() =>
+                    {
+                        Debug.Log(target.transform);
+                        RotateAgentToTarget(target.transform);
+                    });
                     row += dz;
                     col += dx;
                     break;
@@ -97,6 +107,6 @@ public class NavigationManager : MonoBehaviour
         }
 
         agent.SetDestination(GameManager.Instance.mapTile[row, col].transform.position + new Vector3(0, 1, 0));
-        agent.gameObject.GetComponent<NavMeshAgentCallbacks>().StartMove();
+        navMeshAgentCallbacks.StartMove();
     }
 }

@@ -104,9 +104,11 @@ public class KeyboardMouseInput : KeyBindInterface
             {
                 (int col, int row) = GetRayCastTargetCoord(hit);
                 NavigationManager.Instance.MoveToCoord(col, row);
-                // TODO: NavMeshAgent에 도착 콜백이 없어서 직접 구현해야 함
-                // RotateAgentToTarget(hit.transform);
-                // GameManager.Instance.mapTile[row, col].State?.Interact();
+                FloorTile target = GameManager.Instance.mapTile[row, col];
+                NavigationManager.Instance.navMeshAgentCallbacks.CompleteEvent.AddListener(() =>
+                {
+                    target.State?.Interact();
+                });
             }
         }
     }
