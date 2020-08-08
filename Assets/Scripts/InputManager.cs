@@ -87,53 +87,83 @@ public class KeyboardMouseInput : KeyBindInterface
             var layerMask = 1 << 12;
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
-                Func<float, int> convertWorld = (origin) => {
-                    int result = Mathf.CeilToInt(origin);
-                    result = result % 2 == 0 ? result : result - 1;
-                    return result;
-                };
-                Func<float, int, int> convertGrid = (origin, size) => {
-                    return convertWorld(origin) / 2 + size / 2;
-                };
-                Vector3 position = hit.point;
-                int col = convertGrid(position.x, GameManager.Instance.mapCols);
-                int row = convertGrid(position.z, GameManager.Instance.mapRows);
+                (int col, int row) = GetRayCastTargetCoord(hit);
+                MoveToCoord(col, row);
+            }
+        }
 
-                if (GameManager.Instance.mapTile[row, col] == null)
-                {
-                    return;
-                }
-
-                if (!GameManager.Instance.mapTile[row, col].canMove)
-                {
-                    // 해당 칸이 올라갈 수 없는 칸이면, 가장 가까운 곳부터 시계방향으로 8방향 탐색
-                    // TODO: 8방향 다 막혀있으면 다이얼로그 띄우기
-                    Func<int, int> Norm = k => (k == 0 ? 0 : (k > 0 ? 1 : -1));
-                    int playerCol = convertGrid(GameManager.Instance.playerObject.transform.position.x, GameManager.Instance.mapCols);
-                    int playerRow = convertGrid(GameManager.Instance.playerObject.transform.position.z, GameManager.Instance.mapRows);
-                    int dx = (int)(playerCol - col);
-                    int dz = (int)(playerRow - row);
-                    dx = Norm(dx);
-                    dz = Norm(dz);
-                    for (int i = 0; i < 8; ++i)
-                    {
-                        if (GameManager.Instance.mapTile[row + dz, col + dx].canMove)
-                        {
-                            row += dz;
-                            col += dx;
-                            break;
-                        }
-                        int tx = Norm(dx + dz);
-                        dz = Norm(dz - dx);
-                        dx = tx;
-                    }
-                }
-
-                agent.SetDestination(GameManager.Instance.mapTile[row, col].transform.position + new Vector3(0, 1, 0));
+        if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
+        {
+            // 좌클릭 하면 상호작용
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var layerMask = 1 << 12;
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+            {
+                (int col, int row) = GetRayCastTargetCoord(hit);
+                MoveToCoord(col, row);
+                // GameManager.Instance.mapTile[row, col].
             }
         }
     }
+
+    private (int col, int row) GetRayCastTargetCoord(RaycastHit hit)
+    {
+        Vector3 position = hit.point;
+        int col = convertGrid(position.x, GameManager.Instance.mapCols);
+        int row = convertGrid(position.z, GameManager.Instance.mapRows);
+        return (col, row);
+    }
+
+    private int convertWorld(float origin)
+    {
+        int result = Mathf.CeilToInt(origin);
+        result = result % 2 == 0 ? result : result - 1;
+        return result;
+    }
+
+    private int convertGrid(float origin, int size)
+    {
+        return convertWorld(origin) / 2 + size / 2;
+    }
+
+    private void MoveToCoord(int col, int row)
+    {
+
+        if (GameManager.Instance.mapTile[row, col] == null)
+        {
+            return;
+        }
+
+        if (!GameManager.Instance.mapTile[row, col].canMove)
+        {
+            // 해당 칸이 올라갈 수 없는 칸이면, 가장 가까운 곳부터 시계방향으로 8방향 탐색
+            // TODO: 8방향 다 막혀있으면 다이얼로그 띄우기
+            Func<int, int> Norm = k => (k == 0 ? 0 : (k > 0 ? 1 : -1));
+            int playerCol = convertGrid(GameManager.Instance.playerObject.transform.position.x, GameManager.Instance.mapCols);
+            int playerRow = convertGrid(GameManager.Instance.playerObject.transform.position.z, GameManager.Instance.mapRows);
+            int dx = (int)(playerCol - col);
+            int dz = (int)(playerRow - row);
+            dx = Norm(dx);
+            dz = Norm(dz);
+            for (int i = 0; i < 8; ++i)
+            {
+                if (GameManager.Instance.mapTile[row + dz, col + dx].canMove)
+                {
+                    row += dz;
+                    col += dx;
+                    break;
+                }
+                int tx = Norm(dx + dz);
+                dz = Norm(dz - dx);
+                dx = tx;
+            }
+        }
+
+        agent.SetDestination(GameManager.Instance.mapTile[row, col].transform.position + new Vector3(0, 1, 0));
+    }
 }
+
 
 public class InputManager : MonoBehaviour
 {
@@ -211,12 +241,12 @@ public class InputManager : MonoBehaviour
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(InputManager))]
-public class InputManagerEditor : Editor 
+public class InputManagerEditor : Editor
 {
     public InputTypeEnum selected;
     public override void OnInspectorGUI()
     {
-        DrawDefaultInspector ();
+        DrawDefaultInspector();
         EditorGUILayout.LabelField("Raise Event");
         InputManager inputManager = (InputManager)target;
         selected = (InputTypeEnum)EditorGUILayout.EnumPopup("selected event", selected);
