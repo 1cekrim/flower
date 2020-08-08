@@ -20,6 +20,7 @@ public class InteractDialog : MonoBehaviour
         hidePosY = -gameObject.GetComponent<RectTransform>().rect.height;
         dialogPanelImage = dialogPanel.GetComponent<Image>();
         dialogPanelButton = dialogPanel.GetComponent<Button>();
+        dialogPanelButton.onClick.AddListener(() => MoveDialog(false));
     }
     public void MoveDialog(bool isUp)
     {

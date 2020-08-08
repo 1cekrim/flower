@@ -61,19 +61,20 @@ namespace TileState
 {
     public class PlantableGrassTile : ITileState
     {
-        private static InteractDialog interactDialog;
+        private static PlantSeedDialog plantSeedDialog;
         public ITileState Init()
         {
-            if (interactDialog == null)
+            if (plantSeedDialog == null)
             {
-                interactDialog = GameObject.Find("InteractCanvas").transform.Find("InteractDialog").gameObject.GetComponent<InteractDialog>();
+                plantSeedDialog = GameObject.Find("InteractCanvas").transform.Find("PlantSeedDialog").gameObject.GetComponent<PlantSeedDialog>();
             }
             return this;
         }
 
         public void Interact()
         {
-            interactDialog.MoveDialog(true);
+            plantSeedDialog.UpdateDialog();
+            plantSeedDialog.MoveDialog(true);
         }
     }
 

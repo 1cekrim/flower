@@ -39,6 +39,12 @@ public class Seed : Item, IPurchaseAble, ISaleAble
         Component.AddButton(button);
     }
 
+    public void UpdatePlantSeedDialogElement(ItemComponent component)
+    {
+        component.ItemName = flower.Name;
+        component.ItemTexture = texture;
+    }
+
     public void UpdatePurchaseButton()
     {
         PurchaseButtonObject.GoodsName = flower.Name;

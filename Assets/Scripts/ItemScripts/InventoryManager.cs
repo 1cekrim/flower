@@ -72,4 +72,17 @@ public class InventoryManager : MonoBehaviour
         itemComponent.ItemCount -= count;
         return true;
     }
+
+    public List<T> SearchItem<T>() where T : Item
+    {
+        List<T> items = new List<T>();
+        foreach (Item item in inventory.Values)
+        {
+            if (item is T)
+            {
+                items.Add(item as T);
+            }
+        }
+        return items;
+    }
 }
