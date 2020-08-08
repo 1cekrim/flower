@@ -22,5 +22,22 @@ public class FlowerDialog : InteractDialog
     {
         getFlowerButton.gameObject.SetActive(state.IsComplete);
         flowerNameText.text = state.seed.Flower.Name + " : " + state.LevelName;
+        if (state.IsComplete)
+        {
+            getFlowerButton.onClick.RemoveAllListeners();
+            getFlowerButton.onClick.AddListener(() =>
+            {
+                // TODO: 꽃(4) State를 줄기(2) State로 바꿔야 함
+                InventoryManager.Instance.GetItem(state.seed.Flower);
+                MoveDialog(false);
+            });
+        }
+        removeFlowerButton.onClick.RemoveAllListeners();
+        removeFlowerButton.onClick.AddListener(() =>
+        {
+            floorTile.State = new TileState.PlantableGrassTile().Init(floorTile);
+            Destroy(floorTile.aboveBlock);
+            MoveDialog(false);
+        });
     }
 }
