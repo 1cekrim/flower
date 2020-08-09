@@ -42,7 +42,9 @@ public class FlowerDialog : InteractDialog
         sprinklerButton.onClick.RemoveAllListeners();
         sprinklerButton.onClick.AddListener(() =>
         {
+            // TODO: 지금은 물 주면 바로 성장하지만, 나중에 수정 필요함
             state.ToNextFlowerState();
+            AudioManager.Instance.PlayAudioClip(AudioManager.Instance.LoadAudioClip("effect/SprinklerSound"));
             MoveDialog(false);
         });
     }

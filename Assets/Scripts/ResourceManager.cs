@@ -21,6 +21,14 @@ public class ResourceManager : MonoBehaviour
     public bool ChangeGold(int amount)
     {
         int result = gold + amount;
+        if (amount < 0)
+        {
+            AudioManager.Instance.PlayAudioClip(AudioManager.Instance.LoadAudioClip("effect/PurchaseSound"), 0, 2);
+        }
+        else
+        {
+            AudioManager.Instance.PlayAudioClip(AudioManager.Instance.LoadAudioClip("effect/SaleSound"), 0.5f, 2);
+        }
         if (result < 0)
         {
             return false;
