@@ -28,6 +28,7 @@ public class FlowerDialog : InteractDialog
             getFlowerButton.onClick.AddListener(() =>
             {
                 InventoryManager.Instance.GetItem(state.seed.Flower);
+                AudioManager.Instance.PlayAudioClip(AudioManager.Instance.LoadAudioClip("effect/GetFlowerSound"), 1, 1.5f);
                 floorTile.State = new TileState.StemFlower(state.seed).Init(floorTile);
                 MoveDialog(false);
             });

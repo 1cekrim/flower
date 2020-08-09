@@ -11,6 +11,7 @@ public class NavigationManager : MonoBehaviour
     private static NavigationManager _instance;
     private NavMeshAgent agent;
     public NavMeshAgentCallbacks navMeshAgentCallbacks;
+    private AudioSource audioSource;
     public static NavigationManager Instance
     {
         get
@@ -34,6 +35,7 @@ public class NavigationManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         agent = GameManager.Instance.playerObject.GetComponent<NavMeshAgent>();
+        audioSource = agent.gameObject.GetComponent<AudioSource>();
         navMeshAgentCallbacks = agent.gameObject.GetComponent<NavMeshAgentCallbacks>();
     }
 
@@ -107,6 +109,25 @@ public class NavigationManager : MonoBehaviour
         }
 
         agent.SetDestination(GameManager.Instance.mapTile[row, col].transform.position + new Vector3(0, 1, 0));
+        if (!audioSource.isPlaying)
+        {
+            PlayStartFootStep();
+        }
+        navMeshAgentCallbacks.CompleteEvent.AddListener(PlayStopFootStep);
         navMeshAgentCallbacks.StartMove();
+    }
+
+    public void PlayStartFootStep()
+    {
+        audioSource.clip = AudioManager.Instance.LoadAudioClip("effect/FootStepSound");
+        audioSource.time = 0;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
+
+    public void PlayStopFootStep()
+    {
+        audioSource.loop = false;
+        audioSource.Stop();
     }
 }
