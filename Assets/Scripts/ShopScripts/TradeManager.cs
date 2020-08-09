@@ -85,6 +85,8 @@ public class TradeManager : MonoBehaviour
         purchaseButton.GoodsItem = purchaseAble;
         purchaseAble.PurchaseButtonObject = purchaseButton;
         purchaseAble.UpdatePurchaseButton();
+        purchaseAble.IsPurchaseAble = false;
+        purchaseButton.gameObject.SetActive(false);
         purchaseAbles.Add(purchaseAble);
         purchaseButton.GetComponent<Button>().onClick.AddListener(() => { Purchase(purchaseAble); });
         categories[purchaseAble.Category].AddPurchaseButton(purchaseButton);
@@ -113,5 +115,32 @@ public class TradeManager : MonoBehaviour
         }
         InventoryManager.Instance.RemoveItem(saleAble, amount);
         ResourceManager.Instance.ChangeGold(saleAble.SalePrice * amount);
+    }
+
+    public void SetIsPurchaseAble(string id, bool isPurchaseAble)
+    {
+        IPurchaseAble target = null;
+        foreach (IPurchaseAble able in purchaseAbles)
+        {
+            if (able.PurchaseButtonObject.GoodsItem.Id == id)
+            {
+                target = able;
+            }
+        }
+        if (target == null)
+        {
+            Debug.LogError("target is null");
+            return;
+        }
+        target.PurchaseButtonObject.gameObject.SetActive(isPurchaseAble);
+    }
+
+    public void UnlockAllPurchaseAble()
+    {
+        foreach (IPurchaseAble able in purchaseAbles)
+        {
+            able.IsPurchaseAble = true;
+            able.PurchaseButtonObject.gameObject.SetActive(true);
+        }
     }
 }

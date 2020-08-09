@@ -19,6 +19,8 @@ public class SeedFactory : MonoBehaviour, IItemFactory
             items.Add(seed.Id, seed);
             TradeManager.Instance.AddPurchaseButton(seed);
         }
+        // TODO: 씨앗 해금 코드는 다른 곳으로 옮기기
+        TradeManager.Instance.SetIsPurchaseAble("tulip_red_seed", true);
     }
 }
 
@@ -33,6 +35,7 @@ public class Seed : Item, IPurchaseAble, ISaleAble
     public Seed(Flower flower) : base(flower.Id + "_seed")
     {
         this.flower = flower;
+        Debug.Log(Id);
         texture = Resources.Load("ItemPNG/seed") as Texture;
     }
     protected override void UpdateItemComponent()
@@ -82,11 +85,8 @@ public class Seed : Item, IPurchaseAble, ISaleAble
 
     public bool IsPurchaseAble
     {
-        get
-        {
-            // TODO: 발견한 씨앗만 등장하게
-            return true;
-        }
+        // TODO: 발견한 씨앗만 등장하게
+        get; set;
     }
 
     private PurchaseButton purchaseButton;

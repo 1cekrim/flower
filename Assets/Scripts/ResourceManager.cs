@@ -10,6 +10,16 @@ public class ResourceManager : MonoBehaviour
     public UnityEvent levelUpEvent;
     public UnityEvent changeSprinklerEvent;
     public UnityEvent changeMaxSprinklerEvent;
+    private void GainLevelUpReward(int level)
+    {
+        switch (level)
+        {
+            case 2:
+                TradeManager.Instance.SetIsPurchaseAble("cosmos_white_seed", true);
+                break;
+            // 데모에서는 2레벨이면 충분
+        }
+    }
     private int gold;
     public int Gold
     {
@@ -82,7 +92,7 @@ public class ResourceManager : MonoBehaviour
         {
             exp -= MaxExp;
             changeExpEvent.Invoke();
-            ++level;
+            GainLevelUpReward(++level);
             levelUpEvent.Invoke();
         }
     }

@@ -29,6 +29,8 @@ public class FlowerDialog : InteractDialog
             {
                 InventoryManager.Instance.GetItem(state.seed.Flower);
                 AudioManager.Instance.PlayAudioClip(AudioManager.Instance.LoadAudioClip("effect/GetFlowerSound"), 1, 1.5f);
+                // TODO: 꽃마다 주는 경험치 다르게
+                ResourceManager.Instance.ChangeExp(1);
                 floorTile.State = new TileState.StemFlower(state.seed).Init(floorTile);
                 MoveDialog(false);
             });
