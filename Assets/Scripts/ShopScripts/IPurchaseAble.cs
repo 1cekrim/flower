@@ -4,5 +4,5 @@ public interface IPurchaseAble
     void UpdatePurchaseButton();
     PurchaseButton PurchaseButtonObject { get; set; }
     PurchaseCategoryEnum Category { get; }
-    bool IsPurchaseAble { get; }
+    bool IsPurchaseAble { get; set; }
 }

@@ -28,6 +28,9 @@ public class FlowerDialog : InteractDialog
             getFlowerButton.onClick.AddListener(() =>
             {
                 InventoryManager.Instance.GetItem(state.seed.Flower);
+                AudioManager.Instance.PlayAudioClip(AudioManager.Instance.LoadAudioClip("effect/GetFlowerSound"), 1, 1.5f);
+                // TODO: 꽃마다 주는 경험치 다르게
+                ResourceManager.Instance.ChangeExp(1);
                 floorTile.State = new TileState.StemFlower(state.seed).Init(floorTile);
                 MoveDialog(false);
             });
@@ -42,7 +45,9 @@ public class FlowerDialog : InteractDialog
         sprinklerButton.onClick.RemoveAllListeners();
         sprinklerButton.onClick.AddListener(() =>
         {
+            // TODO: 지금은 물 주면 바로 성장하지만, 나중에 수정 필요함
             state.ToNextFlowerState();
+            AudioManager.Instance.PlayAudioClip(AudioManager.Instance.LoadAudioClip("effect/SprinklerSound"));
             MoveDialog(false);
         });
     }

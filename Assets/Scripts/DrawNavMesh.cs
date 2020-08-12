@@ -12,7 +12,7 @@ public class DrawNavMesh : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
     }
     private void Update()
-    {
+    {   
         if (agent.path.corners != null && agent.path.corners.Length > 0)
         {
             lineRenderer.positionCount = agent.path.corners.Length;
