@@ -91,18 +91,30 @@ public class FlowerFactory : MonoBehaviour, IItemFactory
 {
     public bool IsInitialized = false;
     [SerializeField]
+    private GameObject bookContent;
+    [SerializeField]
+    private GameObject bookFlowerPrefab;
+    [SerializeField]
     private FlowerData[] flowerData;
     public List<Flower> flowers = new List<Flower>();
     public void AppendItems(ref Dictionary<string, Item> items)
     {
         foreach (FlowerData data in flowerData)
         {
+            GameObject obj = Instantiate(bookFlowerPrefab, Vector3.zero, Quaternion.identity);
+            obj.transform.SetParent(bookContent.transform);
+            obj.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+            BookFlower bookFlower = obj.GetComponent<BookFlower>();
+            bookFlower.Name = data.kind.Translate();
             foreach (FlowerColor color in data.colors)
             {
                 string id = data.kind.ToString() + "_" + color;
                 Flower flower = new Flower(data.kind, color, id);
                 items.Add(id, flower);
                 flowers.Add(flower);
+                
+                // 나중에 빼기
+                bookFlower.AddColor(color);
             }
         }
         IsInitialized = true;
